@@ -7,7 +7,7 @@ import java.security.Signature;
 public class MessageSigner {
     private Signature ecdsaSign;
     private PrivateKey privateKey;
-    public MessageSigner(String message, PrivateKey privateKey) {
+    public MessageSigner(PrivateKey privateKey) {
         try {
             ecdsaSign = Signature.getInstance("SHA256withECDSA");
         } catch (NoSuchAlgorithmException e) {
