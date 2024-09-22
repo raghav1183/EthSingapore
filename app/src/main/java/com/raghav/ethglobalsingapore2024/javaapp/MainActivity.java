@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -32,12 +33,12 @@ public class MainActivity extends AppCompatActivity {
         inputEditText = findViewById(R.id.inputEditText);
 
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
 
+        setContentView(R.layout.activity_main);
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+//
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if(bluetoothAdapter == null){
                 Toast.makeText(this, "Device does not support Bluetooth", Toast.LENGTH_SHORT).show();
@@ -50,12 +51,17 @@ public class MainActivity extends AppCompatActivity {
                 bleAdvertiser = new BleAdvertiser(this,bluetoothAdapter);
                 Toast.makeText(this, bleAdvertiser.toString(), Toast.LENGTH_SHORT).show();
             }
-            return insets;
-        });
+
+
     }
 
     public void onBroadcastClick(View v){
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");  // Use Elliptic Curve (EC) cryptography
+        KeyPairGenerator keyGen = null;  // Use Elliptic Curve (EC) cryptography
+        try {
+            keyGen = KeyPairGenerator.getInstance("EC");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
         keyGen.initialize(256);  // Key size
         KeyPair keyPair = keyGen.generateKeyPair();
 
